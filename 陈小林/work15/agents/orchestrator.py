@@ -30,7 +30,7 @@ def set_scrape_limit(limit: int) -> None:
 
 
 def scrape_hotspots(state: dict) -> dict:
-    """抓取百度热搜列表"""
+    """抓取百度热搜列表（单次请求，无需 async）"""
     print(f"🔍 [主Agent] 正在抓取百度热搜 (top {_scrape_limit})...")
     try:
         items = fetch_baidu_hotspot(limit=_scrape_limit)
@@ -102,7 +102,7 @@ def _get_llm() -> ChatOpenAI:
 
 
 def generate_summary(state: dict) -> dict:
-    """汇总所有子 Agent 的分析结果，生成 Markdown 报告"""
+    """汇总所有子 Agent 的分析结果，生成 Markdown 报告（单次 LLM 调用，无需 async）"""
     results = state.get("analysis_results", [])
     items = state.get("hotspot_items", [])
 

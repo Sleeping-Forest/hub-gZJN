@@ -42,16 +42,11 @@ def _get_llm() -> ChatOpenAI:
     )
 
 
-def analyze_hotspot(state: dict) -> dict:
-    """分析单个热搜条目的节点函数
+async def analyze_hotspot(state: dict) -> dict:
+    """分析单个热搜条目的节点函数（异步）
 
     由 LangGraph Send API 调用，每个实例处理一个热搜条目。
-
-    Args:
-        state: 包含单个热搜条目信息的状态字典
-
-    Returns:
-        包含 analysis_results 的更新字典
+    使用 ainvoke 实现真正的协程并行。
     """
     item = state.get("hotspot_item", {})
     title = item.get("title", "未知")
@@ -73,7 +68,7 @@ def analyze_hotspot(state: dict) -> dict:
 
     try:
         llm = _get_llm()
-        response = llm.invoke(prompt)
+        response = await llm.ainvoke(prompt)
         content = response.content
 
         # 解析 LLM 返回的 JSON

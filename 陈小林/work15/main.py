@@ -9,13 +9,13 @@
 from __future__ import annotations
 
 import argparse
-import sys
+import asyncio
 
 from baidu_hotspot_agent.agents.orchestrator import set_scrape_limit
 from baidu_hotspot_agent.graph import app
 
 
-def main() -> None:
+async def main() -> None:
     parser = argparse.ArgumentParser(
         description="百度热搜多智能体分析系统 - 自动抓取热搜并生成摘要报告",
     )
@@ -41,14 +41,14 @@ def main() -> None:
     print("=" * 60)
     print()
 
-    # 执行图流程
+    # 异步执行图流程（子 Agent 通过协程并行分析）
     initial_state = {
         "hotspot_items": [],
         "analysis_results": [],
         "final_summary": "",
     }
 
-    result = app.invoke(initial_state)
+    result = await app.ainvoke(initial_state)
 
     # 输出报告
     report = result.get("final_summary", "未能生成报告")
@@ -66,4 +66,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
